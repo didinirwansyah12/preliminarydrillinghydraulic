@@ -25,7 +25,7 @@ st.markdown("""
   <div class="pdha-title">
   
   Preliminary Drilling Hydraulic Tool</div>
-  <div class="pdha-sub">Power Law fluid model | developed by Didin Irwansyah</div>
+  <div class="pdha-sub">Power Law fluid model | developed by Didin Irwansyah for Rigsis Drilling Team</div>
   <div class="pdha-note">This prototype is intended for preliminary assessment only. It is not a replacement for detailed drilling hydraulic analysis from Mud Company.</div>
 </div>
 """, unsafe_allow_html=True)

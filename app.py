@@ -41,11 +41,14 @@ API_CASING = {
 }
 
 def _font(size,bold=False):
+    # Use a bundled font first so local and Streamlit Cloud render the schematic identically.
+    bundled = Path(__file__).parent / "assets" / ("DejaVuSans-Bold.ttf" if bold else "DejaVuSans.ttf")
+    candidates=[bundled]
     win_font_dir=Path(os.environ.get("WINDIR","C:/Windows"))/"Fonts"
-    candidates=([win_font_dir/"arialbd.ttf",win_font_dir/"calibrib.ttf",Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf")] if bold else [win_font_dir/"arial.ttf",win_font_dir/"calibri.ttf",Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf")])
+    candidates += ([win_font_dir/"arialbd.ttf",win_font_dir/"calibrib.ttf",Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"),Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf")] if bold else [win_font_dir/"arial.ttf",win_font_dir/"calibri.ttf",Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),Path("/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf")])
     for f in candidates:
         if f.exists(): return ImageFont.truetype(str(f),size=size)
-    return ImageFont.load_default()
+    raise RuntimeError("No TrueType font available for Well Schematic rendering.")
 
 def _center_text(draw,box,text,font,fill=(0,0,0)):
     x1,y1,x2,y2=box; bb=draw.textbbox((0,0),text,font=font); tw,th=bb[2]-bb[0],bb[3]-bb[1]
@@ -56,7 +59,9 @@ def render_schematic(td,previous_casing_depth,dp_len,hwdp_len,dc_len):
     sx,sy=img.width/1469,img.height/2048
     base={"dp":(856,585,1094,655),"csg":(593,956,830,1027),"hwdp":(1138,1212,1375,1282),"dc":(1138,1544,1376,1615),"oh":(940,1942,1177,2012)}
     boxes={k:tuple(int(v) for v in (x1*sx,y1*sy,x2*sx,y2*sy)) for k,(x1,y1,x2,y2) in base.items()}
-    fy,fw=_font(78,True),_font(64,True)
+    # These values are rasterized into the image.  Use a fixed, bundled font and
+    # sizes that remain readable after Streamlit scales the image to the column width.
+    fy,fw=_font(52,True),_font(36,True)
     vals={"dp":f"{dp_len:,.0f} m","hwdp":f"{hwdp_len:,.0f} m","dc":f"{dc_len:,.0f} m","csg":f"0 – {previous_casing_depth:,.0f} m","oh":f"{previous_casing_depth:,.0f} – {td:,.0f} m"}
     for key in ("dp","hwdp","dc"): _center_text(d,boxes[key],vals[key],fy)
     for key in ("csg","oh"): _center_text(d,boxes[key],vals[key],fw)

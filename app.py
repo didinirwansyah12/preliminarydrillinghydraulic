@@ -17,9 +17,9 @@ st.markdown("""
 .pdha-title{display:block!important;visibility:visible!important;opacity:1!important;color:#f4f4f4!important;font-size:34px!important;font-weight:800!important;line-height:1.2!important;margin:0 0 18px 0!important;padding:0!important;letter-spacing:-.3px!important;white-space:normal!important;text-shadow:none!important}
 .pdha-sub{display:block!important;visibility:visible!important;color:#9aa0a6!important;font-size:14px!important;font-weight:600!important;line-height:1.25!important;margin:0 0 20px 0!important;padding:0!important}
 .pdha-note{display:block!important;visibility:visible!important;background:#19344e!important;color:#48a5ff!important;padding:17px 16px!important;border-radius:8px!important;font-size:14px!important;line-height:1.35!important;box-sizing:border-box;width:100%;overflow:visible!important}
-[data-testid="stNumberInput"] input, div[data-testid="stNumberInput"] input, div[data-testid="stNumberInput"] input[type="number"]{font-size:20px!important;font-weight:500!important;line-height:1.35!important;min-height:2.9rem!important;font-family:inherit!important;opacity:1!important}
-[data-testid="stNumberInput"] input::placeholder{font-size:20px!important}
-[data-testid="stNumberInput"] button{min-height:2.9rem!important}
+[data-testid="stNumberInput"] input, div[data-testid="stNumberInput"] input, div[data-testid="stNumberInput"] input[type="number"]{font-size:16px!important;font-weight:500!important;line-height:1.25!important;min-height:2.6rem!important;font-family:inherit!important;opacity:1!important}
+[data-testid="stNumberInput"] input::placeholder{font-size:16px!important}
+[data-testid="stNumberInput"] button{min-height:2.6rem!important}
 .section{color:#073b73;font-weight:800;font-size:18px;margin:.3rem 0 .45rem}.result{color:#0b63b6;font-weight:800;font-size:18px;margin:.3rem 0 .45rem}
 [data-testid="stMetric"]{border:1px solid #d5dde6;border-radius:7px;padding:5px}
 </style>
@@ -56,7 +56,7 @@ def render_schematic(td,previous_casing_depth,dp_len,hwdp_len,dc_len):
     sx,sy=img.width/1469,img.height/2048
     base={"dp":(856,585,1094,655),"csg":(593,956,830,1027),"hwdp":(1138,1212,1375,1282),"dc":(1138,1544,1376,1615),"oh":(940,1942,1177,2012)}
     boxes={k:tuple(int(v) for v in (x1*sx,y1*sy,x2*sx,y2*sy)) for k,(x1,y1,x2,y2) in base.items()}
-    fy,fw=_font(36,True),_font(30,True)
+    fy,fw=_font(78,True),_font(64,True)
     vals={"dp":f"{dp_len:,.0f} m","hwdp":f"{hwdp_len:,.0f} m","dc":f"{dc_len:,.0f} m","csg":f"0 – {previous_casing_depth:,.0f} m","oh":f"{previous_casing_depth:,.0f} – {td:,.0f} m"}
     for key in ("dp","hwdp","dc"): _center_text(d,boxes[key],vals[key],fy)
     for key in ("csg","oh"): _center_text(d,boxes[key],vals[key],fw)

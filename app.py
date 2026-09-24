@@ -11,17 +11,19 @@ st.set_page_config(page_title="Preliminary Drilling Hydraulic Assessment", page_
 
 st.markdown("""
 <style>
-.block-container{max-width:1500px;padding-top:1.05rem;padding-bottom:1.2rem}
-.pdha-header-wrap{margin:0 0 1.0rem 0;overflow:visible}
-.pdha-title{color:#f4f4f4;font-size:34px;font-weight:800;line-height:1.15;margin:0 0 20px 0;letter-spacing:-.3px}
-.pdha-sub{color:#9aa0a6;font-size:14px;font-weight:600;line-height:1.25;margin:0 0 20px 0}
-.pdha-note{background:#19344e;color:#48a5ff;padding:17px 16px;border-radius:8px;font-size:14px;line-height:1.35;box-sizing:border-box;width:100%}
+.block-container{max-width:1500px;padding-top:1.8rem;padding-bottom:1.2rem}
+.pdha-header-wrap{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:999!important;width:100%;margin:0 0 1.0rem 0;padding:0!important;overflow:visible!important}
+.pdha-title{display:block!important;visibility:visible!important;opacity:1!important;color:#f4f4f4!important;font-size:34px!important;font-weight:800!important;line-height:1.2!important;margin:0 0 18px 0!important;padding:0!important;letter-spacing:-.3px!important;white-space:normal!important}
+.pdha-sub{display:block!important;visibility:visible!important;color:#9aa0a6!important;font-size:14px!important;font-weight:600!important;line-height:1.25!important;margin:0 0 20px 0!important;padding:0!important}
+.pdha-note{display:block!important;visibility:visible!important;background:#19344e!important;color:#48a5ff!important;padding:17px 16px!important;border-radius:8px!important;font-size:14px!important;line-height:1.35!important;box-sizing:border-box;width:100%;overflow:visible!important}
+[data-testid="stNumberInput"] input{font-size:1.08rem!important;font-weight:500!important;line-height:1.35!important;min-height:2.65rem!important}
+[data-testid="stNumberInput"] button{min-height:2.65rem!important}
 .section{color:#073b73;font-weight:800;font-size:18px;margin:.3rem 0 .45rem}.result{color:#0b63b6;font-weight:800;font-size:18px;margin:.3rem 0 .45rem}
 [data-testid="stMetric"]{border:1px solid #d5dde6;border-radius:7px;padding:5px}
 </style>
 <div class="pdha-header-wrap">
   <div class="pdha-title">Preliminary Drilling Hydraulic Tool</div>
-  <div class="pdha-sub">Power Law fluid model</div>
+  <div class="pdha-sub">Power Law fluid model | developed by Didin Irwansyah</div>
   <div class="pdha-note">This prototype is intended for preliminary assessment only. It is not a replacement for detailed drilling hydraulic analysis from Mud Company.</div>
 </div>
 """, unsafe_allow_html=True)

@@ -61,7 +61,7 @@ def render_schematic(td,previous_casing_depth,dp_len,hwdp_len,dc_len):
     boxes={k:tuple(int(v) for v in (x1*sx,y1*sy,x2*sx,y2*sy)) for k,(x1,y1,x2,y2) in base.items()}
     # These values are rasterized into the image.  Use a fixed, bundled font and
     # sizes that remain readable after Streamlit scales the image to the column width.
-    fy,fw=_font(52,True),_font(26,True)
+    fy,fw=_font(40,True),_font(26,True)
     vals={"dp":f"{dp_len:,.0f} m","hwdp":f"{hwdp_len:,.0f} m","dc":f"{dc_len:,.0f} m","csg":f"0 – {previous_casing_depth:,.0f} m","oh":f"{previous_casing_depth:,.0f} – {td:,.0f} m"}
     for key in ("dp","hwdp","dc"): _center_text(d,boxes[key],vals[key],fy)
     for key in ("csg","oh"): _center_text(d,boxes[key],vals[key],fw)

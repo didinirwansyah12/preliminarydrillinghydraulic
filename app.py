@@ -71,7 +71,7 @@ def render_schematic(td,previous_casing_depth,dp_len,hwdp_len,dc_len):
     boxes={k:tuple(int(v) for v in (x1*sx,y1*sy,x2*sx,y2*sy)) for k,(x1,y1,x2,y2) in base.items()}
     # These values are rasterized into the image.  Use a fixed, bundled font and
     # sizes that remain readable after Streamlit scales the image to the column width.
-    fy,fw=_font(48,True),_font(26,True)
+    fy,fw=_font(45,True),_font(26,True)
     vals={"dp":f"{dp_len:,.0f} m","hwdp":f"{hwdp_len:,.0f} m","dc":f"{dc_len:,.0f} m","csg":f"0 – {previous_casing_depth:,.0f} m","oh":f"{previous_casing_depth:,.0f} – {td:,.0f} m"}
     for key in ("dp","hwdp","dc"): _center_text(d,boxes[key],vals[key],fy)
     for key in ("csg","oh"): _center_text(d,boxes[key],vals[key],fw)
@@ -603,13 +603,18 @@ def make_pdf(r,meta,schematic,pressure_curve_df):
         t.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,0),colors.HexColor("#2b2b2b")),("GRID",(0,0),(-1,-1),.35,colors.HexColor("#b8b8b8")),("VALIGN",(0,0),(-1,-1),"MIDDLE"),("ROWBACKGROUNDS",(0,1),(-1,-1),[colors.white,colors.HexColor("#f6f6f6")]),("FONTSIZE",(0,0),(-1,-1),7)])); return t
 
     story=[]
-    # Cover page styled after the supplied Rigsis report: clean white page, centered identity block.
-    story += [Spacer(1,34*mm)]
-    if tool_icon_path.exists():
-        story.append(RLImage(str(tool_icon_path),width=42*mm,height=42*mm,hAlign="CENTER"))
+    # Cover page: retain the Rigsis logo at the previous report size, then place
+    # the hydraulic icon below the report title.
+    story += [Spacer(1,30*mm)]
+    if logo_path.exists():
+        story.append(RLImage(str(logo_path),width=55*mm,height=33*mm,hAlign="CENTER",kind="proportional"))
     else:
-        story.append(Spacer(1,42*mm))
-    story += [Spacer(1,14*mm),P("PRELIMINARY",title),P("DRILLING HYDRAULIC & HOLE CLEANING ASSESSMENT",title),Spacer(1,8*mm)]
+        story.append(Spacer(1,33*mm))
+    story += [Spacer(1,16*mm),P("PRELIMINARY",title),P("DRILLING HYDRAULIC & HOLE CLEANING ASSESSMENT",title),Spacer(1,8*mm)]
+    if tool_icon_path.exists():
+        story.append(RLImage(str(tool_icon_path),width=33.6*mm,height=33.6*mm,hAlign="CENTER",kind="proportional"))
+    else:
+        story.append(Spacer(1,33.6*mm))
     story += [P(f"<b>Well:</b> {meta['well_name']}",cover_sub),P(f"<b>Project / Field:</b> {meta['project']}",cover_sub),P(f"<b>Location:</b> {meta['location']}",cover_sub),Spacer(1,34*mm),P(f"Prepared by: {meta['prepared_by']}",cover_sub),P(f"Report Date: {meta['report_date']}",cover_sub),P(f"Report No.: {meta['report_number']}    Revision: {meta['revision']}",cover_sub),PageBreak()]
 
     # 1. Report Summary

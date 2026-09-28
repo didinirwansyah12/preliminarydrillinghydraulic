@@ -8,7 +8,7 @@ import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
 
 APP_DIR = Path(__file__).parent
-ICON_PATH = APP_DIR / "assets" / "DrillingHydraulicsIcon.png"
+ICON_PATH = APP_DIR / "assets" / "DrillingHydraulicsIcon_256.png"
 st.set_page_config(page_title="Preliminary Drilling Hydraulic Assessment", page_icon=str(ICON_PATH), layout="wide")
 
 # Header styling. The actual icon is rendered with Streamlit so it remains reliable on Streamlit Cloud.
@@ -17,6 +17,9 @@ st.markdown("""
 .block-container{max-width:1500px;padding-top:1.0rem;padding-bottom:1.2rem}
 .pdha-spacer{height:2.2rem!important;line-height:2.2rem!important;display:block!important}
 .pdha-header-wrap{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:999999!important;width:100%;margin:0 0 1.0rem 0!important;padding:0!important;overflow:visible!important;clear:both!important}
+.pdha-title-row{display:flex!important;align-items:center!important;gap:14px!important;width:100%!important;overflow:visible!important}
+.pdha-tool-icon{display:block!important;width:54px!important;height:54px!important;min-width:54px!important;max-width:54px!important;object-fit:contain!important;border-radius:8px!important}
+.pdha-title-block{display:block!important;min-width:0!important;flex:1!important}
 .pdha-title{display:block!important;visibility:visible!important;opacity:1!important;color:#f4f4f4!important;font-size:34px!important;font-weight:800!important;line-height:1.2!important;margin:0 0 10px 0!important;padding:0!important;letter-spacing:-.3px!important;white-space:normal!important;text-shadow:none!important}
 .pdha-sub{display:block!important;visibility:visible!important;color:#9aa0a6!important;font-size:14px!important;font-weight:600!important;line-height:1.25!important;margin:0 0 20px 0!important;padding:0!important}
 .pdha-note{display:block!important;visibility:visible!important;background:#19344e!important;color:#48a5ff!important;padding:17px 16px!important;border-radius:8px!important;font-size:14px!important;line-height:1.35!important;box-sizing:border-box;width:100%;overflow:visible!important}
@@ -29,17 +32,18 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-hcol1, hcol2 = st.columns([0.07, 0.93], gap="small")
-with hcol1:
-    st.image(str(ICON_PATH), width=54)
-with hcol2:
-    st.markdown("""
-    <div class="pdha-header-wrap">
+st.markdown("""
+<div class="pdha-header-wrap">
+  <div class="pdha-title-row">
+    <img class="pdha-tool-icon" src="data:image/png;base64,ICON_BASE64_PLACEHOLDER" alt="Hydraulic Tool Icon">
+    <div class="pdha-title-block">
       <div class="pdha-title">Preliminary Drilling Hydraulic Tool</div>
       <div class="pdha-sub">Power Law fluid model | developed by Didin Irwansyah for Rigsis Drilling Team</div>
-      <div class="pdha-note">This prototype is intended for preliminary assessment only. It is not a replacement for detailed drilling hydraulic analysis from Mud Company.</div>
     </div>
-    """, unsafe_allow_html=True)
+  </div>
+  <div class="pdha-note">This prototype is intended for preliminary assessment only. It is not a replacement for detailed drilling hydraulic analysis from Mud Company.</div>
+</div>
+""".replace("ICON_BASE64_PLACEHOLDER", __import__("base64").b64encode(ICON_PATH.read_bytes()).decode("ascii")), unsafe_allow_html=True)
 
 API_CASING = {
     "9-5/8 in × 29.30 lb/ft":{"od":9.625,"id":9.063,"drift":8.907},"9-5/8 in × 32.30 lb/ft":{"od":9.625,"id":9.001,"drift":8.845},"9-5/8 in × 36.00 lb/ft":{"od":9.625,"id":8.921,"drift":8.765},"9-5/8 in × 40.00 lb/ft":{"od":9.625,"id":8.835,"drift":8.679},"9-5/8 in × 47.00 lb/ft":{"od":9.625,"id":8.681,"drift":8.525},
@@ -530,7 +534,7 @@ def make_pdf(r,meta,schematic,pressure_curve_df):
     table_cell=ParagraphStyle("TableCell",parent=tiny,leading=9.2)
 
     logo_path=Path(__file__).parent/"assets"/"rigsis_logo.png"
-    tool_icon_path=Path(__file__).parent/"assets"/"DrillingHydraulicsIcon.png"
+    tool_icon_path=Path(__file__).parent/"assets"/"DrillingHydraulicsIcon_256.png"
 
     class NumberedCanvas(__import__("reportlab.pdfgen.canvas",fromlist=["Canvas"]).Canvas):
         def __init__(self,*args,**kwargs):

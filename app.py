@@ -7,29 +7,39 @@ import pandas as pd
 import streamlit as st
 from PIL import Image, ImageDraw, ImageFont
 
-st.set_page_config(page_title="Preliminary Drilling Hydraulic Assessment", page_icon="🛢️", layout="wide")
+APP_DIR = Path(__file__).parent
+ICON_PATH = APP_DIR / "assets" / "DrillingHydraulicsIcon.png"
+st.set_page_config(page_title="Preliminary Drilling Hydraulic Assessment", page_icon=str(ICON_PATH), layout="wide")
 
+# Header styling. The actual icon is rendered with Streamlit so it remains reliable on Streamlit Cloud.
 st.markdown("""
 <style>
 .block-container{max-width:1500px;padding-top:1.0rem;padding-bottom:1.2rem}
 .pdha-spacer{height:2.2rem!important;line-height:2.2rem!important;display:block!important}
 .pdha-header-wrap{display:block!important;visibility:visible!important;opacity:1!important;position:relative!important;z-index:999999!important;width:100%;margin:0 0 1.0rem 0!important;padding:0!important;overflow:visible!important;clear:both!important}
-.pdha-title{display:block!important;visibility:visible!important;opacity:1!important;color:#f4f4f4!important;font-size:34px!important;font-weight:800!important;line-height:1.2!important;margin:0 0 18px 0!important;padding:0!important;letter-spacing:-.3px!important;white-space:normal!important;text-shadow:none!important}
+.pdha-title{display:block!important;visibility:visible!important;opacity:1!important;color:#f4f4f4!important;font-size:34px!important;font-weight:800!important;line-height:1.2!important;margin:0 0 10px 0!important;padding:0!important;letter-spacing:-.3px!important;white-space:normal!important;text-shadow:none!important}
 .pdha-sub{display:block!important;visibility:visible!important;color:#9aa0a6!important;font-size:14px!important;font-weight:600!important;line-height:1.25!important;margin:0 0 20px 0!important;padding:0!important}
 .pdha-note{display:block!important;visibility:visible!important;background:#19344e!important;color:#48a5ff!important;padding:17px 16px!important;border-radius:8px!important;font-size:14px!important;line-height:1.35!important;box-sizing:border-box;width:100%;overflow:visible!important}
+.pdha-icon img{border-radius:10px!important}
 [data-testid="stNumberInput"] input, div[data-testid="stNumberInput"] input, div[data-testid="stNumberInput"] input[type="number"]{font-size:16px!important;font-weight:500!important;line-height:1.25!important;min-height:2.6rem!important;font-family:inherit!important;opacity:1!important}
 [data-testid="stNumberInput"] input::placeholder{font-size:16px!important}
 [data-testid="stNumberInput"] button{min-height:2.6rem!important}
 .section{color:#073b73;font-weight:800;font-size:18px;margin:.3rem 0 .45rem}.result{color:#0b63b6;font-weight:800;font-size:18px;margin:.3rem 0 .45rem}
 [data-testid="stMetric"]{border:1px solid #d5dde6;border-radius:7px;padding:5px}
 </style>
-<div class="pdha-spacer">&nbsp;</div>
-<div class="pdha-header-wrap">
-  <div class="pdha-title">Preliminary Drilling Hydraulic Tool</div>
-  <div class="pdha-sub">Power Law fluid model | developed by Didin Irwansyah for Rigsis Drilling Team</div>
-  <div class="pdha-note">This prototype is intended for preliminary assessment only. It is not a replacement for detailed drilling hydraulic analysis from Mud Company.</div>
-</div>
 """, unsafe_allow_html=True)
+
+hcol1, hcol2 = st.columns([0.07, 0.93], gap="small")
+with hcol1:
+    st.image(str(ICON_PATH), width=54)
+with hcol2:
+    st.markdown("""
+    <div class="pdha-header-wrap">
+      <div class="pdha-title">Preliminary Drilling Hydraulic Tool</div>
+      <div class="pdha-sub">Power Law fluid model | developed by Didin Irwansyah for Rigsis Drilling Team</div>
+      <div class="pdha-note">This prototype is intended for preliminary assessment only. It is not a replacement for detailed drilling hydraulic analysis from Mud Company.</div>
+    </div>
+    """, unsafe_allow_html=True)
 
 API_CASING = {
     "9-5/8 in × 29.30 lb/ft":{"od":9.625,"id":9.063,"drift":8.907},"9-5/8 in × 32.30 lb/ft":{"od":9.625,"id":9.001,"drift":8.845},"9-5/8 in × 36.00 lb/ft":{"od":9.625,"id":8.921,"drift":8.765},"9-5/8 in × 40.00 lb/ft":{"od":9.625,"id":8.835,"drift":8.679},"9-5/8 in × 47.00 lb/ft":{"od":9.625,"id":8.681,"drift":8.525},
@@ -61,7 +71,7 @@ def render_schematic(td,previous_casing_depth,dp_len,hwdp_len,dc_len):
     boxes={k:tuple(int(v) for v in (x1*sx,y1*sy,x2*sx,y2*sy)) for k,(x1,y1,x2,y2) in base.items()}
     # These values are rasterized into the image.  Use a fixed, bundled font and
     # sizes that remain readable after Streamlit scales the image to the column width.
-    fy,fw=_font(40,True),_font(26,True)
+    fy,fw=_font(52,True),_font(36,True)
     vals={"dp":f"{dp_len:,.0f} m","hwdp":f"{hwdp_len:,.0f} m","dc":f"{dc_len:,.0f} m","csg":f"0 – {previous_casing_depth:,.0f} m","oh":f"{previous_casing_depth:,.0f} – {td:,.0f} m"}
     for key in ("dp","hwdp","dc"): _center_text(d,boxes[key],vals[key],fy)
     for key in ("csg","oh"): _center_text(d,boxes[key],vals[key],fw)
@@ -520,6 +530,7 @@ def make_pdf(r,meta,schematic,pressure_curve_df):
     table_cell=ParagraphStyle("TableCell",parent=tiny,leading=9.2)
 
     logo_path=Path(__file__).parent/"assets"/"rigsis_logo.png"
+    tool_icon_path=Path(__file__).parent/"assets"/"DrillingHydraulicsIcon.png"
 
     class NumberedCanvas(__import__("reportlab.pdfgen.canvas",fromlist=["Canvas"]).Canvas):
         def __init__(self,*args,**kwargs):
@@ -593,12 +604,12 @@ def make_pdf(r,meta,schematic,pressure_curve_df):
 
     story=[]
     # Cover page styled after the supplied Rigsis report: clean white page, centered identity block.
-    story += [Spacer(1,42*mm)]
-    if logo_path.exists():
-        story.append(RLImage(str(logo_path),width=55*mm,height=33*mm,hAlign="CENTER"))
+    story += [Spacer(1,34*mm)]
+    if tool_icon_path.exists():
+        story.append(RLImage(str(tool_icon_path),width=42*mm,height=42*mm,hAlign="CENTER"))
     else:
-        story.append(Spacer(1,27*mm))
-    story += [Spacer(1,20*mm),P("PRELIMINARY",title),P("DRILLING HYDRAULIC & HOLE CLEANING ASSESSMENT",title),Spacer(1,8*mm)]
+        story.append(Spacer(1,42*mm))
+    story += [Spacer(1,14*mm),P("PRELIMINARY",title),P("DRILLING HYDRAULIC & HOLE CLEANING ASSESSMENT",title),Spacer(1,8*mm)]
     story += [P(f"<b>Well:</b> {meta['well_name']}",cover_sub),P(f"<b>Project / Field:</b> {meta['project']}",cover_sub),P(f"<b>Location:</b> {meta['location']}",cover_sub),Spacer(1,34*mm),P(f"Prepared by: {meta['prepared_by']}",cover_sub),P(f"Report Date: {meta['report_date']}",cover_sub),P(f"Report No.: {meta['report_number']}    Revision: {meta['revision']}",cover_sub),PageBreak()]
 
     # 1. Report Summary
